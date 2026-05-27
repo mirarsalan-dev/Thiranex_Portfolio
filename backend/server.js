@@ -3,15 +3,24 @@ const express = require('express');
 const cors = require('cors');
 const admin = require('firebase-admin');
 
-// Initialize Firebase Admin
-// Initialize Firebase using environment variables instead of a JSON file
+// Robust Firebase initialization helper
+let privateKey = process.env.FIREBASE_PRIVATE_KEY;
+
+if (privateKey) {
+  // 1. Strip accidental wrapping quotes if they were pasted into Vercel
+  if (privateKey.startsWith('"') && privateKey.endsWith('"')) {
+    privateKey = privateKey.slice(1, -1);
+  }
+  // 2. Convert escaped string newlines into actual cryptographic line breaks
+  privateKey = privateKey.replace(/\\n/g, '\n');
+}
+
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert({
       projectId: process.env.FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      // 💡 The .replace execution handles how Vercel processes newline string escapes
-      privateKey: process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n') : undefined
+      privateKey: privateKey
     })
   });
 }
