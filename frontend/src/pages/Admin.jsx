@@ -41,7 +41,8 @@ function Admin() {
 
       const projectPayload = { ...formData, technologies: techArray };
 
-      await axios.post('http://localhost:5000/api/projects', projectPayload, {
+      // UPDATED: Relative path seamlessly managed by vercel.json routing architecture
+      await axios.post('/api/projects', projectPayload, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -49,14 +50,13 @@ function Admin() {
       setFormData({ title: '', description: '', githubLink: '', technologies: '', content: '' });
     } catch (error) {
       console.error('Upload error:', error);
-      setStatus({ type: 'error', message: 'Failed to publish. Connection refused.' });
+      setStatus({ type: 'error', message: 'Failed to publish. Request rejected.' });
     } finally {
       setIsSubmitting(false);
       setTimeout(() => setStatus({ type: '', message: '' }), 4000);
     }
   };
 
-  // Animation configurations
   const containerVars = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.1 } }
@@ -69,13 +69,11 @@ function Admin() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans p-6 md:p-12 relative overflow-hidden">
       
-      {/* Background Ambient Glow */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/20 blur-[120px] rounded-full pointer-events-none"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-indigo-600/10 blur-[100px] rounded-full pointer-events-none"></div>
 
       <div className="max-w-4xl mx-auto relative z-10">
         
-        {/* Header */}
         <motion.header 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -106,7 +104,6 @@ function Admin() {
           </button>
         </motion.header>
 
-        {/* Status Alerts */}
         {status.message && (
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
@@ -122,7 +119,6 @@ function Admin() {
           </motion.div>
         )}
 
-        {/* Main Form UI */}
         <motion.div 
           variants={containerVars}
           initial="hidden"

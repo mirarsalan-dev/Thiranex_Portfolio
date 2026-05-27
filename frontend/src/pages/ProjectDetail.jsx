@@ -12,7 +12,8 @@ function ProjectDetail() {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/projects/${id}`);
+        // UPDATED: Relative URL structure for production
+        const response = await axios.get(`/api/projects/${id}`);
         setProject(response.data);
       } catch (error) {
         console.error('Error fetching project:', error);
@@ -86,9 +87,7 @@ function ProjectDetail() {
           </div>
         </header>
 
-        {/* prose-invert is the magic class here! 
-          It tells Tailwind Typography to color headings white and text light gray.
-        */}
+        {/* Dynamic Markdown Output */}
         <article className="prose prose-invert prose-lg max-w-none bg-white/[0.02] backdrop-blur-xl p-8 md:p-12 rounded-3xl border border-white/10 shadow-2xl">
           <ReactMarkdown>
             {project.content || "No detailed case study provided for this project yet."}

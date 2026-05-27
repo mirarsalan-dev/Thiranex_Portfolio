@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import ChatWidget from '../components/ChatWidget'; // <-- NEW: Importing the Bot
+import ChatWidget from '../components/ChatWidget';
 
 function Home() {
   const [projects, setProjects] = useState([]);
@@ -14,7 +14,8 @@ function Home() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/projects');
+        // UPDATED: Relative URL for production routing
+        const response = await axios.get('/api/projects');
         setProjects(response.data);
       } catch (error) {
         console.error('Error fetching projects:', error);
@@ -25,7 +26,8 @@ function Home() {
 
     const fetchGithubStats = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/github-stats');
+        // UPDATED: Relative URL for production routing
+        const response = await axios.get('/api/github-stats');
         setGithubStats(response.data);
       } catch (error) {
         console.error('Error fetching GitHub stats:', error);
@@ -81,15 +83,14 @@ function Home() {
               Building scalable web applications with React, Node.js, and a relentless focus on user experience.
             </p>
 
-            {/* NEW: Dynamic PDF Download Button */}
+            {/* UPDATED: Relative endpoint path for live deployment */}
             <div className="mt-8 flex justify-center md:justify-start">
               <a 
-                href="http://localhost:5000/api/download-resume" 
+                href="/api/download-resume" 
                 target="_blank"
                 rel="noreferrer"
                 className="group relative inline-flex items-center gap-3 px-6 py-3.5 bg-white/10 hover:bg-blue-600 border border-white/20 hover:border-blue-500 rounded-xl font-bold text-white transition-all duration-300 shadow-lg overflow-hidden"
               >
-                {/* PDF Icon */}
                 <svg className="w-5 h-5 text-blue-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
@@ -255,7 +256,7 @@ function Home() {
         </p>
       </footer>
 
-      {/* NEW: The AI Floating Widget */}
+      {/* Floating Chat Engine */}
       <ChatWidget />
       
     </div>

@@ -4,11 +4,17 @@ const cors = require('cors');
 const admin = require('firebase-admin');
 
 // Initialize Firebase Admin
-const serviceAccount = require(process.env.GOOGLE_APPLICATION_CREDENTIALS);
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
-
+// Initialize Firebase using environment variables instead of a JSON file
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      // 💡 The .replace execution handles how Vercel processes newline string escapes
+      privateKey: process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n') : undefined
+    })
+  });
+}
 const db = admin.firestore();
 const app = express();
 
@@ -235,7 +241,11 @@ app.get('/api/download-resume', async (req, res) => {
 });
 
 // Start Server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Only start the server locally if NOT running on Vercel production
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+
+// CRITICAL: Export the app for Vercel serverless environment
+module.exports = app;
