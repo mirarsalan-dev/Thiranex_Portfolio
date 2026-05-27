@@ -102,12 +102,12 @@ app.get('/api/github-stats', async (req, res) => {
     const githubUsername = 'mirarsalan-dev'; 
 
     const response = await fetch(`https://api.github.com/users/${githubUsername}`, {
-      headers: {
-        'User-Agent': 'Portfolio-Backend-App',
-        // NEW: Add your secret token to bypass rate limits!
-        'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`
-      }
-    });
+  headers: {
+    'User-Agent': 'Portfolio-Backend-App',
+    // UPDATED: Changed 'Bearer' to 'token' for broader classic PAT compatibility
+    'Authorization': `token ${process.env.GITHUB_TOKEN}`
+  }
+});
 
     if (!response.ok) {
       console.error(`GitHub API Error: ${response.status} ${response.statusText}`);
